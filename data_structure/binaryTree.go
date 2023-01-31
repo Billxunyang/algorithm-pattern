@@ -69,24 +69,32 @@ func inorderTraversal(root *TreeNode) []int  {
 //后序非递归 利用栈的思想存储
 func postorderTraversal(root *TreeNode) []int  {
 	res := make([]int,0)
-	if root == nil {
-		return res
-	}
-
 	stackList := make([]*TreeNode,0)
-	stackList = append(stackList, root)
-	for len(stackList) > 0  {
-		currentNode := stackList[0]
-		res = append(res, currentNode.Val)
-		if currentNode.Left != nil {
-			stackList = append(stackList, currentNode.Left)
+	preNode := &TreeNode{}
+	for root != nil || len(stackList) > 0  {
+		//先获取左子树,
+		for root != nil {
+			stackList =append(stackList, root)
+			root = root.Left
 		}
 
-		if currentNode.Right != nil {
-			stackList = append(stackList, currentNode.Right)
+		//拿到最左子树的值放到结果中
+		root = stackList[len(stackList)-1]
+
+		stackList = stackList[:len(stackList)-1]
+		//说明可以取当前根结点
+		if root.Right == nil || root.Right == preNode {
+			res = append(res, root.Val)
+			preNode = root
+			root = nil
+		}else{
+			stackList = append(stackList,root)
+			root = root.Right
 		}
 
-		stackList = stackList[1:]
+
+
+
 	}
 
 	return res
